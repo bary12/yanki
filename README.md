@@ -7,7 +7,7 @@ Allows you to write flashcards quickly and collaborate by managing them in a git
 
 in `My Biology Book/Chapter 1/Section 1/notes.yaml`:
 
-```
+```yaml
 1.1.1:
     front: Mitochondria
     back: The Powerhouse of the cell
