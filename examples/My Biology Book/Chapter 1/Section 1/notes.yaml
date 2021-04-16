@@ -1,3 +1,5 @@
+model: MyBiologyBook-TextNote
+---
 1.1.1:
   front: Mitochondria
   back: The powerhouse of the cell

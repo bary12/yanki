@@ -1,0 +1,40 @@
+MyBiologyBook-TextNote:
+  model_id: 559856851
+  fields:
+    - name: Front
+    - name: Back
+  templates:
+    - name: Card 1
+      qfmt: |
+        {{Front}}
+      afmt: |
+        {{FrontSide}}<hr id="answer">{{Back}}
+  css: |
+    .card {
+        font-family: arial;
+        font-size: 20px;
+        text-align: center;
+        color: black;
+        background-color: white;
+    }
+  latex_pre: |
+    \documentclass[border=1px]{standalone}
+
+    \usepackage[utf8]{inputenc}
+
+    \usepackage{siunitx}
+    \sisetup{
+      per-mode=fraction,
+      inter-unit-product = \ensuremath{{}\cdot{}}
+    }
+    \DeclareSIUnit\atm{atm}
+    \DeclareSIUnit\psi{psi}
+
+    \usepackage{chemmacros}
+    \usepackage{chemfig}
+    \chemsetup{modules = newman}
+
+    \pagestyle{empty}
+    \setlength{\parindent}{0in}
+    \begin{document}
+  latex_svg: true

@@ -5,6 +5,7 @@ from typing import List, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from yanki.notes import YamlNote
+from yanki.models import YamlModel
 
 DECK_YAML = 'deck.yaml'
 
@@ -35,10 +36,10 @@ class YamlDeck:
 
         return YamlDeck(notes=notes, name=name, id=deck_id)
 
-    def to_genanki_deck(self) -> genanki.Deck:
+    def to_genanki_deck(self, models: List[genanki.Model]) -> genanki.Deck:
         deck = genanki.Deck(deck_id=self.id, name=self.name, description='')
         for note in self.notes:
-            deck.add_note(note.to_genanki_note())
+            deck.add_note(note.to_genanki_note(models=models))
 
         print(f'creating deck "{self.name}"')
         return deck

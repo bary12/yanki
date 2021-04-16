@@ -1,13 +1,16 @@
 import genanki
-from typing import Optional
-
+from dataclasses import dataclass
+from typing import Optional, List
+from pathlib import Path
+import yaml
+from yanki.exceptions import ValidationError
 
 class ModelWithLatexPreamble(genanki.Model):
     def __init__(
             self,
             latex_pre: Optional[str] = None,
             latex_post: Optional[str] = None,
-            latex_svg : bool = False,
+            latex_svg: bool = False,
             *args,
             **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,54 +28,27 @@ class ModelWithLatexPreamble(genanki.Model):
         json['latexsvg'] = self.latex_svg
 
         return json
-        
 
-main_model = ModelWithLatexPreamble(
-    model_id=559856851,
-    fields=[
-        {
-            'name': 'Front',
-        },
-        {
-            'name': 'Back'
-        }
-    ],
-    templates=[
-        {
-            'name': 'Card 1',
-            'qfmt': '{{Front}}',
-            'afmt': '{{FrontSide}}<hr id="answer">{{Back}}',
-        },
-    ],
-    css='''
-.card {
-    font-family: arial;
-    font-size: 20px;
-    text-align: center;
-    color: black;
-    background-color: white;
-}''',
-    latex_pre=r'''
-\documentclass[border=1px]{standalone}
 
-\usepackage[utf8]{inputenc}
+@dataclass
+class YamlModel:
+    name: str
+    dct: dict
 
-\usepackage{siunitx}
-\sisetup{
-  per-mode=fraction,
-  inter-unit-product = \ensuremath{{}\cdot{}}
-}
-\DeclareSIUnit\atm{atm}
-\DeclareSIUnit\psi{psi}
+    @staticmethod
+    def from_file(path: Path) -> List['YamlModel']:
+        with path.open() as file:
+            data = yaml.safe_load(file)
 
-\usepackage{chemmacros}
-\usepackage{chemfig}
-\chemsetup{modules = newman}
+        if not isinstance(data, dict):
+            raise ValidationError('models file is not a dict')
 
-\pagestyle{empty}
-\setlength{\parindent}{0in}
-\begin{document}
-    ''',
-    name='yanki_default_model',
-    latex_svg=True
-)
+        data: dict
+
+        return [
+            YamlModel(name=name, dct=model)
+            for name, model in data.items()
+        ]
+
+    def to_genanki_model(self) -> genanki.Model:
+        return ModelWithLatexPreamble(name=self.name, **self.dct)
